@@ -39,5 +39,22 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS tabla1;
+DROP TABLE IF EXISTS result;
 
+
+CREATE TABLE tabla1
+AS
+    SELECT concat_ws(':',c5) AS col FROM tbl0;
+
+
+CREATE TABLE result
+AS
+    SELECT upper(col) FROM tabla1;
+
+
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output
 

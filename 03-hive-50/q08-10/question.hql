@@ -40,5 +40,35 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS tabla1;
+DROP TABLE IF EXISTS result;
 
+
+CREATE TABLE tabla1
+AS
+    SELECT
+        c2 AS letra,
+        value
+    FROM
+        tbl0
+    LATERAL VIEW
+        explode(c6) tbl0;
+
+
+CREATE TABLE result
+AS
+    SELECT letra, sum(value) AS num
+    FROM
+        tabla1
+GROUP BY
+    letra
+ORDER BY
+    letra;
+
+
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output
 

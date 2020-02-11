@@ -27,4 +27,40 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS tabla1;
+DROP TABLE IF EXISTS result;
+
+
+CREATE TABLE tabla1
+AS
+    SELECT
+        letra,
+        c3
+    FROM
+        t0
+    LATERAL VIEW
+        explode(c2) t0 AS letra;
+
+
+CREATE TABLE result
+AS
+    SELECT
+        letra,
+        key,
+        count(2)
+    FROM
+        tabla1
+    LATERAL VIEW
+        explode(c3) tabla1
+    GROUP BY
+        letra, key
+    ORDER BY
+        letra, key;
+
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output
+
 

@@ -39,5 +39,35 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS tabla1;
+DROP TABLE IF EXISTS result;
 
+
+CREATE TABLE tabla1
+AS
+    SELECT
+        c2 AS letra,
+        collect_set(cast(c1 as string)) AS num
+    FROM
+        tbl0
+GROUP BY
+    c2
+ORDER BY
+    c2;
+
+
+CREATE TABLE result
+AS
+    SELECT
+        letra,
+        concat_ws(':',num)
+    FROM
+        tabla1;
+
+
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output
 
