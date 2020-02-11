@@ -38,3 +38,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+--fs -rm data.csv;
+--fs -put data.csv;
+
+uper = FOREACH u GENERATE $2,UPPER($2),LOWER($2);
+f = ORDER uper BY $0;
+
+STORE f INTO 'output' USING PigStorage(',');
+
+--fs -get output/ ;

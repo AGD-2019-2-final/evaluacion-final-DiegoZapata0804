@@ -28,3 +28,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --        
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+--fs -rm data.csv;
+--fs -put data.csv;
+
+y = FILTER u BY SUBSTRING ($4,0,1) == 'b';
+z = FOREACH y GENERATE $1,$4;
+
+STORE z INTO 'output' USING PigStorage(',');
+
+--fs -get output/ ;

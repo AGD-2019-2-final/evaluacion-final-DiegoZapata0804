@@ -20,3 +20,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+a = FOREACH u GENERATE FLATTEN(STRSPLIT($3,'-',0));
+b = FOREACH a GENERATE $0 AS year;
+c = GROUP b BY year;
+d = FOREACH c GENERATE group , COUNT(b);
+
+STORE d INTO 'output' USING PigStorage(',');
+
+--fs -get output/;

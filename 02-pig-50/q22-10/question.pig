@@ -29,3 +29,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+
+y = FILTER u BY $4 MATCHES '.*n';
+z = FOREACH y GENERATE $1,$4;
+
+STORE z INTO 'output' USING PigStorage(',');
+

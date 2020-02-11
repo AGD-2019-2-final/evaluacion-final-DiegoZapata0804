@@ -27,5 +27,20 @@
 -- 
 fs -rm -f -r output;
 --
+--fs -rm data.csv;
+--fs -put data.csv;
 
 
+dt = LOAD 'data.csv' USING PigStorage(',') 
+    AS (id:int, 
+        firstname:CHARARRAY, 
+        surname:CHARARRAY, 
+        birthday:CHARARRAY, 
+        color:CHARARRAY, 
+        quantity:INT);
+
+r = FOREACH dt GENERATE CONCAT($1,'@',$2);
+
+STORE r INTO 'output';
+
+--fs -get output/ ;

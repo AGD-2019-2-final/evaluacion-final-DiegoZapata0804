@@ -30,3 +30,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+
+a = FOREACH u GENERATE FLATTEN(STRSPLIT($3,'-',0));
+z = FOREACH a GENERATE  $0 , SUBSTRING($0,2,4);
+
+STORE z INTO 'output' USING PigStorage(',');
+
+--fs -get output/ ;

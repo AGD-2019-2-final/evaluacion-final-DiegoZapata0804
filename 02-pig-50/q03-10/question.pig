@@ -8,3 +8,20 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+--fs -rm data.tsv;
+--fs -put data.tsv;
+
+lines = LOAD 'data.tsv'
+    AS (letra:CHARARRAY, 
+        fecha:CHARARRAY,  
+        valor:INT);
+    
+ordenar = ORDER lines BY $2;
+
+extra = LIMIT ordenar 5;
+
+l = FOREACH extra GENERATE $2;
+
+STORE l INTO 'output';
+
+

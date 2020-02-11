@@ -40,3 +40,28 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+f = FOREACH u GENERATE FLATTEN(STRSPLIT($3,'-',0)),GetMonth(ToDate($3));
+z = FOREACH f GENERATE CONCAT($0,'-',$1,'-',$2),(
+    
+    CASE $1
+        WHEN 01 THEN 'ene'
+        WHEN 02 THEN 'feb'
+        WHEN 03 THEN 'mar'
+        WHEN 04 THEN 'abr'
+        WHEN 05 THEN 'may'
+        WHEN 06 THEN 'jun'
+        WHEN 07 THEN 'jul'
+        WHEN 08 THEN 'ago'
+        WHEN 09 THEN 'sep'
+        WHEN 10 THEN 'oct'
+        WHEN 11 THEN 'nov'
+        ELSE 'dic' 
+    END 
+        
+    ),$1,$3;
+
+STORE z INTO 'output' USING PigStorage(',');
+
+--fs -get output/ ;

@@ -33,3 +33,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+--fs -rm data.csv;
+--fs -put data.csv;
+
+y = FILTER u BY SUBSTRING($2,0,1) IN ('D','E','F','G','H','J','K') ;
+z = FOREACH y GENERATE $2;
+
+STORE z INTO 'output' USING PigStorage(',');
+
+--fs -get output/ ;
